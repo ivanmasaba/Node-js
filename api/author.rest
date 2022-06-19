@@ -1,0 +1,13 @@
+GET http://localhost:3000/authors/
+
+
+###
+GET http://localhost:3000/authors/62ad45f35a8ba7d754332aae
+
+###
+POST http://localhost:3000/authors/
+Content-Type: application/json
+
+{
+    "name":"mark"
+}
