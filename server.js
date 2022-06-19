@@ -1,4 +1,6 @@
-require('dotenv').config()
+if(process.env.NODE_env != 'production'){
+    require('dotenv').config()
+}
 
 const express = require('express')
 const expresslayouts = require('express-ejs-layouts')
@@ -23,6 +25,6 @@ app.use( express.static( 'public' ) )
 app.use( "/", indexRouter )
 app.use( "/authors", authorsRouter )
 
-app.listen( process.env.PORT, () => {
+app.listen( process.env.PORT || 3000 , () => {
     console.log( "server running on http://localhost:" + process.env.PORT );
 } )
