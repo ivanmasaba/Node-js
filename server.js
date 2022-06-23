@@ -11,6 +11,7 @@ require( './db/db_con' ) // connect to db
 
 const indexRouter = require('./routes/index')
 const authorsRouter = require('./routes/authors')
+const booksRouter = require('./routes/books')
 
 app.set('view engine', 'ejs')
 app.engine('ejs', require('ejs').__express);
@@ -24,6 +25,7 @@ app.use( express.static( 'public' ) )
 
 app.use( "/", indexRouter )
 app.use( "/authors", authorsRouter )
+app.use( "/books", booksRouter )
 
 app.listen( process.env.PORT || 3000 , () => {
     console.log( "server running on http://localhost:" + process.env.PORT );

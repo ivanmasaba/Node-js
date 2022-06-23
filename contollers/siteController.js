@@ -1,3 +1,11 @@
-module.exports.siteIndex = ( req, res ) => {
-    res.render( 'index' )
+const Book = require('../models/book')
+module.exports.siteIndex = async ( req, res ) => {
+    let books
+    try {
+        books = await Book.find().sort( { createdAt: 'desc' } ).limit(10).exec()
+    } catch (error) {
+        books = []
+    }
+
+    res.render( 'index', { books: books } )
 }

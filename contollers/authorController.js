@@ -36,8 +36,7 @@ module.exports.createAuthor = async ( req, res ) => {
     })
     console.log(req.body.name)
     try{
-        await author.save()
-        // const newAuthor = await author.create()
+        const newAuthor = await author.save()
       //  res.status(201).json(newAuthor)
         // res.redirect(`authors/${newAuthor.id}`)
             res.redirect(`authors`)

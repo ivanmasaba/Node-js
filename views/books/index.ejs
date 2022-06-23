@@ -1,0 +1,36 @@
+<h2>Search books</h2>
+
+<form action="/books" method="get">
+
+    <div>
+        <label for="name">Title</label>
+        <input type="text" name="title" value="<%=searchOptions.title%>" >
+    </div>
+
+    <div>
+        <label for="name">Published After</label>
+        <input type="date" name="publishedAfter" value="<%=searchOptions.publishedAfter%>" >
+    </div>
+
+    <div>
+        <label for="name">Published Before</label>
+        <input type="date" name="publishedBefore" value="<%=searchOptions.publishedBefore%>" >
+    </div>
+
+    <button type="submit">Search</button>
+</form>
+
+<br>
+<div>
+    <% if ( books.length > 0 ) { %>
+ 
+        <% books.forEach( book => { %> 
+        
+            <div> <img height="150" width="100" src="<%= book.coverImagePath %> " alt="">  </div>
+        
+            <% } ) %> 
+        
+        <% }else{ %> 
+            <div> No Books found...  </div>
+        <% } %> 
+</div>
