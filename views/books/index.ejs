@@ -27,17 +27,6 @@
     
 </form>
 
-<br>
-<div>
-    <% if ( books.length > 0 ) { %>
- 
-        <% books.forEach( book => { %> 
-           <a href="/books/<%= book.id %> ">
-            <img height="150" width="100" src="<%= book.coverImagePath %> " alt="">  
-           </a>
-            <% } ) %> 
-        
-        <% }else{ %> 
-            <div> No Books found...  </div>
-        <% } %> 
-</div>
+<br> 
+
+< <%- include( '../partials/bookGrid', { books: books, large: true } ) %> 
