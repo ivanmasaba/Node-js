@@ -10,6 +10,23 @@ router.get( "/", authorController.authorIndex )
 router.get( "/new", authorController.newAuthor )
 
 
+// get one author
+router.get( "/:id", authorController.authorSingle )
+
+
+// edit author page
+router.get( "/:id/edit", authorController.authorEdit )
+
+
+// update author
+router.put( "/:id", authorController.authorUpdate )
+
+
+// delete author
+router.delete( "/:id", authorController.authorDelete )
+
+
+
 // create, send info to db
 router.post( "/", authorController.createAuthor )
 
