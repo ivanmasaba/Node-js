@@ -37,7 +37,7 @@ module.exports.bookIndex =  async ( req, res ) => {
 
 module.exports.bookEdit = async ( req, res ) => {
     try {
-        const book = await Book.findById(req.params.id).populate('author').exec()
+        const book = await Book.findById(req.params.id)
         renderEditPage(res, book )
     } catch (error) {
         res.redirect('/')
@@ -48,7 +48,8 @@ module.exports.bookEdit = async ( req, res ) => {
 
 module.exports.bookSingle = async ( req, res ) => {
     try {
-        const book = await Book.findById(req.params.id)
+        const book = await Book.findById(req.params.id).populate('author').exec()
+        console.log(book.author.name)
         res.render('books/show',  {book: book} )
     } catch (error) {
         res.redirect('/')

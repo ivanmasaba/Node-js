@@ -1,4 +1,4 @@
-<h2>Search authors</h2>
+<h2 class="page-header">Search authors</h2>
 
 <form action="/authors" method="get">
     <label for="name">Name</label>
@@ -14,8 +14,10 @@
 
     <div> 
         <%= author.name %> 
-        <a href="/authors/<%= author.id %> ">View author</a>
-        <a href="/authors/<%= author.id %>/edit">Edit author</a>
+    </div>
+    <div class="btn-row">
+        <a class="btn btn-primary" href="/authors/<%= author.id %> ">View author</a>
+        <a class="btn btn-primary" href="/authors/<%= author.id %>/edit">Edit author</a>
 
         <%- include('../partials/deleteForm', { url: `/authors/${author.id}` }) %> 
    </div>
