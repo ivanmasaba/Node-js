@@ -1,13 +1,12 @@
-// const path = require('path')
 const mongoose = require('mongoose')
 const moment = require('moment')
 const Book = require('../models/book')
 const Author = require('../models/author')
-// const uploadPath = path.join('public/', Book.coverImageBasePath)
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-// const fs = require('fs')
 
-// display all authors
+/************************* */
+
+// display all BOOKS
 module.exports.bookIndex =  async ( req, res ) => {
     let query =  Book.find()
 
@@ -34,19 +33,72 @@ module.exports.bookIndex =  async ( req, res ) => {
    }
 }
 
+/***********Edit BOOK ******************* */
+
+module.exports.bookEdit = async ( req, res ) => {
+    try {
+        const book = await Book.findById(req.params.id).populate('author').exec()
+        renderEditPage(res, book )
+    } catch (error) {
+        res.redirect('/')
+    }
+}
+
+/***********SHOW SINGLE BOOK******************* */
+
+module.exports.bookSingle = async ( req, res ) => {
+    try {
+        const book = await Book.findById(req.params.id)
+        res.render('books/show',  {book: book} )
+    } catch (error) {
+        res.redirect('/')
+    }
+}
+
+/*************NEW BOOK PAGE******************** */
+
 module.exports.newBook = async ( req, res ) => {
     renderNewPage(res, new Book())
 }
 
+
+/**************UPDATE BOOK******************* */
+module.exports.updateBook =  async ( req, res ) => {
+   let book
+   try {
+    let book = await Book.findById(req.params.id)  
+    book.title = req.body.title,
+    book.author = mongoose.Types.ObjectId(req.body.author.trim()),//conver to valid mongo id
+    book.publishDate = moment.utc(req.body.publishDate),//moment to convert time
+    book.pageCount = req.body.pageCount,
+    book.description = req.body.description
+        if( req.body.cover != null && req.body.cover !== '' ){
+                saveCover(book, req.body.cover)
+        }
+
+    await book.save()
+    res.redirect(`/books/${book.id}`)
+   } catch (error) {
+            if( book != null ){
+                renderEditPage(res, book, true)
+            }else{
+                redirect('/')
+            }
+   
+   }
+
+}
+
+
+
+/**************CREATE A NEW BOOK******************* */
 module.exports.createBook =  async ( req, res ) => {
-    console.log(req.body)
-//   const fileName =  req.file != null ? req.file.filename : null
+  
    const book = new Book({
     title: req.body.title,
     author: mongoose.Types.ObjectId(req.body.author.trim()),//conver to valid mongo id
     publishDate: moment.utc(req.body.publishDate),//moment to convert time
     pageCount: req.body.pageCount,
-    // coverImageName: fileName,
     description: req.body.description
    })
 
@@ -54,16 +106,32 @@ module.exports.createBook =  async ( req, res ) => {
 
    try {
     const newBook = await book.save()
-    // res.redirect(`books/${newBook.id}`)
-    res.redirect(`books`)
+    res.redirect(`books/${newBook.id}`)
    } catch (error) {
-    // if( book.coverImageName != null ){
-    //     removeBookCover( book.coverImageName )
-    // }
     renderNewPage(res, book, true)
-    // console.log(error)
    }
 
+}
+
+
+/******************************** */
+
+/*************DELETE BOOK******************** */
+
+module.exports.deleteBook = async ( req, res ) => {
+    let book
+    try {
+        book = await Book.findById( req.params.id )
+        await book.remove()
+        res.redirect('/books/')
+    } catch (error) {
+        console.log(error)
+        if( book != null ){
+            res.render( 'books/show', { book: book, errorMessage: 'Could not delete book' } )
+        }else{
+            res.redirect('/')
+        }
+    }
 }
 
 // FUNCTIONS ******************
@@ -81,22 +149,28 @@ function saveCover(book, coverEncoded){
 }
 
 
-// function removeBookCover( fileName ){
-//     fs.unlink( path.join(uploadPath, fileName ), err => {
-//         if(err) console.error(err)
-//     } )
-// }
-
-
 
 async function renderNewPage(res, book, hasError=false){
+    renderFormPage(res, book, 'new', hasError=false)
+}
+
+async function renderEditPage(res, book, hasError=false){
+    renderFormPage(res, book, 'edit', hasError=false)
+}
+
+async function renderFormPage(res, book, form, hasError=false){
     try {
         const authors = await Author.find({})
         const params = {authors: authors, book: book}
-        if(hasError) params.errorMessage = 'Error creating new book'
-        res.render('books/new', params)
+            if(hasError){
+                if( form === 'new' ){
+                    params.errorMessage = 'Error creating new book'
+                }else if( form === 'edit' ){
+                    params.errorMessage = 'Error updating book'
+                }
+            }
+        res.render(`books/${form}`, params)
       } catch (error) {
        res.redirect('/books')
       }
 }
-
